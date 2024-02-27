@@ -1,0 +1,329 @@
+    :root {
+        --main-color: #BC183F; /* Your main color */
+        --secondary-color: #1B4824; /* Your secondary color */
+        --lighter-secondary-color: #40985B; /* Your secondary color */
+        --grey-color: #292929; /* Your secondary color */
+        --light-grey-color: #e7e7e7; /* Your secondary color */
+        /* Define more variables as needed */
+    }
+
+    html, body {
+        height: 100%;
+        margin: 0; /* Reset default margin */
+    }
+    
+    body {
+        /* background: linear-gradient(to bottom, var(--secondary-color) 0%, var(--lighter-secondary-color) 100%); */
+        background-attachment: fixed; /* This prevents the background from repeating */
+        font-family: 'Afacad', sans-serif;
+        font-weight: 400; /* Normal weight */
+        font-size: 16px;
+    }
+
+    .modal {
+        background-color: var(--main-color); /* Using CSS variable */
+        color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* Add more common styles here */
+    }
+
+    .custom-border, .custom-border:focus {
+        /* background-color: white !important; */
+        background-color: var(--grey-color) !important;
+        color: white !important;
+    }
+
+    /* Targeting the placeholder specifically */
+    .custom-border::placeholder {
+        color: var(--light-grey-color); /* Bright white placeholder text */
+        opacity: 1; /* Full opacity for the placeholder */
+    }
+
+
+    .row > .col.text-center {
+        display: flex;
+        justify-content: center;
+    }
+
+
+    /* Full-width submit button */
+    .btn-primary {
+        width: 100%;
+        background-color: #007bff; /* Default Bootstrap primary color */
+        border-color: #007bff;
+        margin: 0 auto;
+    }
+
+    .btn-primary:hover {
+        background-color: #0069d9; /* Slightly darker on hover */
+        border-color: #0062cc;
+    }
+
+
+
+    /* Responsive design for mobile */
+    @media (max-width: 768px) {
+        /* Adjustments for smaller screens */
+        .container {
+            max-width: calc(100% - 20px); /* Reduce the width of the container */
+            margin-left: 10px; /* Add margin to the left */
+            margin-right: 10px; /* Add margin to the right */
+        }
+
+        /* Spacing between fields */
+        .custom-border {
+            margin-bottom: 15px;
+        }
+    }
+
+    /* Container styling */
+    .container {
+        /* background-color: #FFAC27; */
+        background-color: var(--grey-color);
+        padding: 20px;
+        border: none;
+    }
+
+
+
+    .col-6.col-md-2 {
+        position: relative;
+    }
+
+
+    .btn-primary.custom-primary-btn {
+        background-color: var(--main-color) !important;
+        border-color: var(--main-color) !important;
+        /* background-color: red; */
+        margin-top: 1rem;
+    }
+
+    .btn-primary.custom-primary-btn:hover,
+    .btn-primary.custom-primary-btn:focus {
+        background-color: var(--main-color) !important; /* Darker shade for hover/focus state */
+        border-color: var(--main-color) !important; /* Consistent border color for hover/focus state */
+    }
+
+
+    .btn-primary.custom-green-btn {
+        background-color: var(--secondary-color) !important; /* Custom color */
+        border-color: var(--secondary-color) !important; /* Consistent border color */
+    }
+
+    .btn-primary.custom-green-btn:hover,
+    .btn-primary.custom-green-btn:focus {
+        background-color: var(--secondary-color) !important; /* Darker shade for hover/focus state */
+        border-color: var(--secondary-color) !important; /* Consistent border color for hover/focus state */
+    }
+
+
+    .error-messages {
+        display: none;
+        color: white;
+        background-color: var(--grey-color);
+        font-weight: bold;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        text-align: left;
+    }
+
+
+
+
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        /* z-index: 1; */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        /* background-color: white; */
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        color: black;
+        /* border: 5px solid blue; */
+        /* background-color: #FFAC27; */
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 90%; /* Could be more or less, depending on screen size */
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+
+
+    /* Spinner CSS */
+    #spinner {
+        position: fixed; /* Fixed position */
+        top: 50%; /* Center vertically */
+        left: 50%; /* Center horizontally */
+        transform: translate(-50%, -50%); /* Adjust to exact center */
+        z-index: 2000; /* Ensure it's above other elements */
+    }
+
+    .loader {
+        border: 5px solid var(--secondary-color);
+        border-top: 5px solid var(--main-color);
+        border-bottom: 5px solid var(--main-color);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* End of Spinner CSS */
+
+
+    /* Sticky top bar */
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        color: white;
+        position: sticky; /* Change from 'sticky' to 'fixed' */
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: white; /* Add a background color for the menu bar */
+        z-index: 1000;
+        /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
+    }
+
+    @media (max-width: 768px) {
+        .top-bar {
+            padding: 10px; /* Reduces padding on smaller screens */
+        }
+    }
+    
+    /* Hamburger Icon */
+    .hamburger-icon {
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 30px;
+        height: 25px;
+    }
+    
+    .hamburger-icon div {
+        height: 3px; /* Thickness of the bar */
+        background-color: black;
+        margin: 3px 0; /* Spacing between bars */
+    }
+    
+    /* Dropdown Menu */
+    .dropdown-content {
+        display: none; /* Hidden by default */
+        position: absolute;
+        right: 0; /* Align to the right edge of the top bar */
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        padding: 12px 16px;
+        z-index: 1001;
+    }
+    
+    .dropdown-item {
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+    
+
+    .forgot-password {
+        display: block;
+        position: absolute;
+        right: 0;
+        bottom: -30px; /* Increase the negative bottom value to move the link further up */
+        font-size: 0.8rem;
+        color: #007bff; /* Bootstrap primary color */
+    }
+    
+
+    .show {
+        display: block !important;
+        }
+
+
+        #userInfoContainer {
+            display: flex;
+            align-items: center;
+            margin-right: auto;
+            padding-left: 10px;
+        }
+
+        #welcomeMessage {
+            color: var(--main-color);
+            margin-left: 10px;
+        }
+
+        #hamburgerDropdown {
+            display: none; /* start as hidden, will be shown on click */
+            flex-direction: column; /* Stack items vertically */
+            position: absolute;
+            top: 100%; /* Position the dropdown right below the .top-bar */
+            right: 0; /* Align to the right side of the .top-bar */
+            background-color: #f9f9f9; /* Background color for the dropdown */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Optional: adds shadow for depth */
+            z-index: 1001; /* Ensure it's above other content */
+            width: auto; /* Set width as needed, could be 100% or auto */
+        }
+        
+        #userPhoto {
+            width: 25px; /* Adjust photo width as needed */
+            height: 25px; /* Adjust photo height as needed */
+            border-radius: 50%; /* Make the photo round */
+            object-fit: cover; /* Ensure the photo scales correctly */
+        }
+
+
+        #accountDetailsModal {
+            /* background-color: white; */
+            padding: 20px;
+            border: none;
+        }
+
+
+    @media (max-width: 768px) {
+        .g_id_signin {
+            margin-bottom: 20px; /* Add space on mobile */
+        }
+    }
+
+    #googleSignInButton {
+        margin-bottom: 20px;
+    }
+
+
+
+        

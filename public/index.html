@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trader App</title>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/css/pikaday.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/pikaday.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="top-bar">
+        <!-- User info container (Moved outside of hamburgerDropdown) -->
+        <div id="userInfoContainer" class="user-info">
+            <img id="userPhoto" alt="User Photo" style="display: none;"/>
+            <span id="welcomeMessage" style="display: none;">Welcome!</span>
+        </div>
+        
+        <div class="hamburger-icon" id="hamburgerMenu">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        
+        <div class="dropdown-content" id="hamburgerDropdown">
+            <div id="signInSignUpMenu" class="dropdown-item" onclick="openAuthModal()">Sign In / Sign Up</div>
+            
+            <div id="accountDetailsMenuItem" class="dropdown-item" onclick="showAccountDetails()" style="display: none;">Account Details</div>
+            <div id="previousPurchasesMenuItem" class="dropdown-item" onclick="showPreviousPurchases()" style="display: none;">Previous Bookings</div>
+            <div id="logoutMenuItem" class="dropdown-item" onclick="logUserOut()" style="display: none;">Log out</div>
+            <!-- Your other menu items here -->
+        </div>
+    </div>
+    
+    
+    
+        <!-- Authentication Modal -->
+        <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="authModalLabel">Sign Up / Login</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Google Sign-In -->
+                        <script src="https://accounts.google.com/gsi/client" async></script>
+                        <div id="g_id_onload"
+                            data-client_id="231763549741-7ahk86n8bnm6gdj44g66o6sjnsgnufro.apps.googleusercontent.com"
+                            data-login_uri="http://localhost:5002"
+                            data-auto_prompt="false"
+                            data-callback="onSignIn">
+                        </div>
+                        <div class="g_id_signin my-google-button"
+                            data-type="standard"
+                            data-size="large"
+                            data-theme="outline"
+                            data-text="sign_in_with"
+                            data-shape="rectangular"
+                            data-logo_alignment="left"
+                            data-callback="onSignIn"
+                            id="googleSignInButton">
+                        </div>
+
+                        <!-- Email/Password Sign-Up/Login Form -->
+                        <form id="emailPasswordAuth">
+                            <div class="mb-3">
+                                <label for="userEmail" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="userEmail" required>
+                            </div>
+                            <div class="mb-3 position-relative">
+                                <label for="userPassword" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="userPassword" required>
+                                <a href="#" class="forgot-password mb-2" onclick="resetPassword()">Forgotten Password?</a>
+                            </div>
+                            <button type="button" id="emailAuthButton" class="btn btn-primary custom-primary-btn">Submit</button>
+                        </form>
+                        <p class="text-center mt-3">New here? Just sign in and we'll set up your account!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    <!-- Account Details Modal -->
+    <!-- <div class="modal fade" id="accountDetailsModal" tabindex="-1" aria-labelledby="accountDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accountDetailsModalLabel">Your Account Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="accountDetailsForm">
+                        <div class="mb-3">
+                            <label for="accountEmailAddress" class="form-label">Email Address</label>
+                            <input type="text" class="form-control" id="accountEmailAddress" name="accountEmailAddress" placeholder="Email Address" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="surname" class="form-label">Surname</label>
+                            <input type="text" class="form-control" id="surname" name="surname" placeholder="Surname">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number">
+                        </div>
+                        <div class="mb-3">
+                            <label for="emailVerified" class="form-label">Email Verified?</label>
+                            <input type="text" class="form-control" id="emailVerified" name="emailVerified" placeholder="" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupDate" class="form-label">Subscriber Since</label>
+                            <input type="text" class="form-control" id="signupDate" name="signupDate" placeholder="" readonly>
+                        </div>
+                        <button type="submit" class="btn btn-primary custom-primary-btn">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> -->
+  
+    
+
+
+
+
+
+
+    
+
+
+
+    
+
+    <div id="spinner" style="display: none;">
+        <div class="loader"></div>
+    </div>
+      
+
+    
+
+
+
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-functions.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="firebaseConfig.js?v=1.1.1"></script>
+    <script src="index.js?v=1.1.1"></script>
+    <script src="signup.js?v=1.1.1"></script>
+    <script src="menu.js?v=1.1.1"></script>
+
+
+
+</body>
