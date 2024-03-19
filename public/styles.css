@@ -1,10 +1,10 @@
     :root {
-        --main-color: #BC183F; /* Your main color */
-        --secondary-color: #1B4824; /* Your secondary color */
-        --lighter-secondary-color: #40985B; /* Your secondary color */
-        --grey-color: #292929; /* Your secondary color */
-        --light-grey-color: #e7e7e7; /* Your secondary color */
-        /* Define more variables as needed */
+        --main-color: #BC183F;
+        --main-color-lighter: #D24D6B;
+        --secondary-color: #1B4824;
+        --lighter-secondary-color: #40985B;
+        --grey-color: #292929;
+        --light-grey-color: #e7e7e7;
     }
 
     html, body {
@@ -21,8 +21,16 @@
     }
 
     .modal {
-        background-color: var(--main-color); /* Using CSS variable */
+        background-color: white;
         color: #fff;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #userProfileModal .modal-content {
+        background-color: white;
+        color: black;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -51,15 +59,36 @@
     /* Full-width submit button */
     .btn-primary {
         width: 100%;
-        background-color: #007bff; /* Default Bootstrap primary color */
-        border-color: #007bff;
+        background-color: var(--main-color); /* Default Bootstrap primary color */
+        border-color: var(--main-color);
         margin: 0 auto;
     }
 
     .btn-primary:hover {
-        background-color: #0069d9; /* Slightly darker on hover */
-        border-color: #0062cc;
+        background-color: var(--main-color-lighter); /* Slightly darker on hover */
+        border-color: var(--main-color-lighter);
     }
+
+    .btn-secondary {
+        width: 100%;
+        background-color: var(--grey-color); /* Default Bootstrap primary color */
+        border-color: var(--grey-color);
+        margin: 0 auto;
+    }
+
+    .btn-success {
+        width: 100%;
+        background-color: var(--lighter-secondary-color); /* Default Bootstrap primary color */
+        border-color: var(--secondary-color);
+        margin: 0 auto;
+    }
+
+    .btn-success:hover {
+        background-color: var(--lighter-secondary-color); /* Slightly darker on hover */
+        border-color: var(--lighter-secondary-color);
+    }
+
+
 
 
 
@@ -136,28 +165,24 @@
 
     /* The Modal (background) */
     .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        /* z-index: 1; */
+        display: none;
+        position: fixed;
         left: 0;
         top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        /* background-color: white; */
-        background-color: rgba(0,0,0,0.4);
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        /* background-color: rgba(0,0,0,0.4); */
     }
 
     /* Modal Content */
     .modal-content {
         background-color: #fefefe;
         color: black;
-        /* border: 5px solid blue; */
-        /* background-color: #FFAC27; */
-        margin: 15% auto; /* 15% from the top and centered */
-        padding: 20px;
+        margin: 10% auto; /* 15% from the top and centered */
+        padding: 10px;
         border: 1px solid #888;
-        width: 90%; /* Could be more or less, depending on screen size */
+        width: 95%;
     }
 
     /* The Close Button */
@@ -173,6 +198,17 @@
         color: black;
         text-decoration: none;
         cursor: pointer;
+    }
+
+    #authModalMessage {
+        text-align: center;
+        color: red !important;
+        margin-top: 20px;
+    }
+
+    #subscriptionStatusIndicator {
+        display: none;
+        margin-left: 30px;
     }
 
 
@@ -203,8 +239,7 @@
 
     /* End of Spinner CSS */
 
-
-    /* Sticky top bar */
+/* Sticky top bar */
     .top-bar {
         display: flex;
         justify-content: space-between;
@@ -216,7 +251,7 @@
         left: 0;
         right: 0;
         background-color: white; /* Add a background color for the menu bar */
-        z-index: 1000;
+        z-index: 1060;
         /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
     }
 
@@ -225,6 +260,26 @@
             padding: 10px; /* Reduces padding on smaller screens */
         }
     }
+
+
+/* Car Upload Modal (and anything else that gets the modal-dialog-custom class) */
+    /* Custom modal dialog sizing */
+    @media (min-width: 992px) { /* For desktops */
+        .modal-dialog-custom {
+            max-width: 60%;
+        }
+    }
+
+    @media (max-width: 991px) { /* For tablets and mobile devices */
+        .modal-dialog-custom {
+            max-width: 100%;
+            margin: 0;
+            margin-right: auto;
+            margin-left: auto;
+        }
+    }
+/* End of Car Upload Modal (and anything else that gets the modal-dialog-custom class) */
+    
     
     /* Hamburger Icon */
     .hamburger-icon {
@@ -288,15 +343,15 @@
         }
 
         #hamburgerDropdown {
-            display: none; /* start as hidden, will be shown on click */
-            flex-direction: column; /* Stack items vertically */
+            display: none;
+            flex-direction: column;
             position: absolute;
-            top: 100%; /* Position the dropdown right below the .top-bar */
-            right: 0; /* Align to the right side of the .top-bar */
-            background-color: #f9f9f9; /* Background color for the dropdown */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Optional: adds shadow for depth */
-            z-index: 1001; /* Ensure it's above other content */
-            width: auto; /* Set width as needed, could be 100% or auto */
+            top: 100%;
+            right: 0;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            width: auto;
         }
         
         #userPhoto {
@@ -325,5 +380,69 @@
     }
 
 
+    @media screen and (max-width: 768px) {
+        .table thead {
+          display: none; /* Hide the header row */
+        }
+        .table, .table tbody, .table tr, .table td {
+          display: block;
+          width: 100%;
+        }
+        .table tr {
+          margin-bottom: 15px;
+        }
+        .table td {
+          text-align: right;
+          padding-left: 50%;
+          position: relative;
+        }
+        .table td::before {
+          content: attr(data-label);
+          position: absolute;
+          left: 0;
+          width: 50%;
+          padding-left: 15px;
+          font-weight: bold;
+          text-align: left;
+        }
 
-        
+        .table tbody tr {
+            border-bottom: 1px solid #ddd; /* Adds a line between rows */
+            margin-bottom: 15px; /* Adds extra space below each row */
+            padding-bottom: 15px; /* Adds space at the bottom inside each row */
+        }
+
+        .table td.hide-on-mobile {
+            display: none; /* Hide this cell on mobile */
+        }
+      }
+      
+
+/* CSS for the carListingsModal */
+.card-img-top {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+.favorite-heart {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+.subscription-notice {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #ffc107;
+    padding: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.card-text + .card-text {
+    margin-top: 10px;
+}
+/* End of CSS for the carListingsModal */

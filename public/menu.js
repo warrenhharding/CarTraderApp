@@ -1,111 +1,114 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const menuIcon = document.getElementById('hamburgerMenu');
-    let dropdownContent = document.querySelector('.dropdown-content');
+  const menuIcon = document.getElementById('hamburgerMenu');
+  const dropdownContent = document.getElementById('hamburgerDropdown');
 
-    menuIcon.addEventListener('click', function() {
-      if (!dropdownContent || getComputedStyle(dropdownContent).display === 'none') {
-        // Load the menu content if it hasn't been loaded yet or if it's hidden
-        fetch('menu.html')
-          .then(response => response.text())
-          .then(html => {
-            menuIcon.insertAdjacentHTML('afterend', html);
-            // Now that it's loaded, toggle visibility
-            const dropdownContent = document.querySelector('.dropdown-content');
-            dropdownContent.style.display = dropdownContent.style.display === 'none' ? 'block' : 'none';
-        })
-          .catch(error => {
-            console.error('Error loading the menu:', error);
-          });
+  menuIcon.addEventListener('click', function() {
+      // Toggle menu visibility based on the display property
+    //   console.log("dropdownContent.style.display: ", dropdownContent.style.display);
+      if (dropdownContent.style.display === 'block') {
+        //   console.log("About to close the dropdown");
+          dropdownContent.style.display = 'none';
+        //   console.log("dropdownContent.style.display: ", dropdownContent.style.display);
       } else {
-        // Toggle menu visibility based on the display property
-        dropdownContent.style.display = 'none';
+        //   console.log("About to display the dropdown");
+          dropdownContent.style.display = 'block';
+        //   console.log("dropdownContent.style.display: ", dropdownContent.style.display);
       }
-    });
   });
 
+  // Additionally, to close the dropdown when any item within it is clicked:
+  const dropdownItems = dropdownContent.querySelectorAll('.dropdown-item');
+  dropdownItems.forEach(item => {
+      item.addEventListener('click', function() {
+          // Hide the dropdown menu
+          dropdownContent.style.display = 'none';
+      });
+  });
+});
 
-  document.addEventListener('DOMContentLoaded', function() {
+
+
+function updateMenuBasedOnAuth() {
+    console.log("Running menu update...");
     const signInSignUpMenu = document.getElementById('signInSignUpMenu');
     const logoutMenuItem = document.getElementById('logoutMenuItem');
-    // const accountDetailsMenuItem = document.getElementById('accountDetailsMenuItem');
+    const makePaymentMenuItem = document.getElementById('makePaymentMenuItem');
+    const subscriptionStatusMenuItem = document.getElementById('subscriptionStatusMenuItem');
+    const enableNotificationsMenuItem = document.getElementById('enableNotificationsMenuItem');
+    const viewAdsDashboardMenuItem = document.getElementById('viewAdsDashboardMenuItem');
     const dropdownContent = document.getElementById('hamburgerDropdown');
-    // const previousPurchasesMenuItem = document.getElementById('previousPurchasesMenuItem');
-  
-    // Check the user's authentication status
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        // User is logged in, hide the Sign In / Sign Up menu item
+
+    const uploadCarButton = document.getElementById('uploadCarButton');
+    const addNewCarMake = document.getElementById('addNewCarMake');
+
+
+    const user = firebase.auth().currentUser; // Directly check the current user
+    if (user) {
+        // User is logged in, update the UI accordingly
         if (signInSignUpMenu) signInSignUpMenu.style.display = 'none';
+        accountDetailsMenuItem.style.display = 'block';
+        subscriptionStatusMenuItem.style.display = 'block';
+        // Assume `subscriptionActive` is a variable that holds subscription status
+        if (!subscriptionActive) {
+            makePaymentMenuItem.style.display = 'block';
+            if (messagingSupported) {
+                enableNotificationsMenuItem.style.display = 'none';
+            }
+        } else {
+            makePaymentMenuItem.style.display = 'none';
+            if (messagingSupported) {
+                enableNotificationsMenuItem.style.display = 'block';
+            }
+        }
+        viewAdsDashboardMenuItem.style.display = 'block';
         logoutMenuItem.style.display = 'block';
         dropdownContent.style.display = 'none';
 
-      } else {
-        // User is not logged in, show the Sign In / Sign Up menu item
+        uploadCarButton.style.display = 'block';
+        addNewCarMake.style.display = 'block';
+        // Additional logic here if needed
+    } else {
+        // User is not logged in, update the UI to reflect this
         if (signInSignUpMenu) signInSignUpMenu.style.display = 'block';
+        accountDetailsMenuItem.style.display = 'none';
+        subscriptionStatusMenuItem.style.display = 'none';
+        makePaymentMenuItem.style.display = 'none';
+        enableNotificationsMenuItem.style.display = 'none';
+        viewAdsDashboardMenuItem.style.display = 'none';
         logoutMenuItem.style.display = 'none';
         dropdownContent.style.display = 'none';
-      }
-    });
-  
-        // Function to open the authentication modal
-        window.openAuthModal = function() {
-            console.log("Opening the authmodal from here...");
-            document.getElementById("authModal").style.visibility = "hidden";
-            $('#authModal').modal('show'); // Using jQuery to show the Bootstrap modal
-        };
+        // Additional logic here if needed
 
-        $('#authModal').on('shown.bs.modal', function () {
-            // Calculate and set the Google Sign-In button width when the modal is fully open
-            console.log("Opening the authmodal from there...");
-            setGoogleSignInButtonWidth();
-            setTimeout(function () {
-                document.getElementById("authModal").style.visibility = "visible";
-            }, 400);
-        });
-    });
-
-
-  
-  
-
-
-
-
-  document.addEventListener('DOMContentLoaded', function() {
-    // console.log('DOM fully loaded and parsed');
-    const hamburgerMenu = document.getElementById('hamburgerMenu');
-    const dropdownContent = document.getElementById('hamburgerDropdown');
-
-    if (!hamburgerMenu || !dropdownContent) {
-        console.error('Hamburger menu or dropdown content not found!');
-        return; // Exit if elements are not found
+        uploadCarButton.style.display = 'none';
+        addNewCarMake.style.display = 'none';
     }
+}
 
-    // Toggle the dropdown visibility
-    hamburgerMenu.addEventListener('click', function(event) {
-        // console.log('Hamburger menu clicked');
-        event.stopPropagation(); // Prevent clicks from being captured outside
-        const isVisible = dropdownContent.style.display === 'block';
-        dropdownContent.style.display = isVisible ? 'none' : 'block';
-        // console.log('Dropdown visibility toggled. Display:', dropdownContent.style.display);
+
+function openAuthModal() {
+    console.log("Opening the authentication modal...");
+    // Define the modal using Bootstrap's Modal component
+    var authModal = new bootstrap.Modal(document.getElementById('authModal'), {
+        keyboard: false
     });
 
-    // Close the dropdown when clicking anywhere outside the dropdown and the hamburger menu
-    document.addEventListener('click', function(event) {
-        // console.log('Document clicked');
-        if (!hamburgerMenu.contains(event.target) && !dropdownContent.contains(event.target)) {
-            // console.log('Click outside hamburger menu and dropdown content');
-            dropdownContent.style.display = 'none';
-            // console.log('Dropdown should now be hidden. Display:', dropdownContent.style.display);
-        }
+    // Add event listener for when the modal is fully shown
+    document.getElementById('authModal').addEventListener('shown.bs.modal', function () {
+        console.log("Modal is fully visible. Running setGoogleSignInButtonWidth...");
+        setGoogleSignInButtonWidth();
     });
 
-    // Prevent the dropdown from closing when clicking inside the dropdown
-    dropdownContent.addEventListener('click', function(event) {
-        // console.log('Click inside dropdown content');
-        event.stopPropagation();
-    });
-});
+    // Show the modal
+    setTimeout(function () {
+        authModal.show();
+    }, 400);
+}
+
+  
+  
+
+
+
 
 
 function updateUserUI(user) {
@@ -155,192 +158,18 @@ function updateUserUI(user) {
 
 
 function showAccountDetails() {
-    const accountDetailsModal = new bootstrap.Modal(document.getElementById('accountDetailsModal'));
-        accountDetailsModal.show();
-
-        // Retrieve user details and populate the form
-        const user = firebase.auth().currentUser;
-        if (user) {
-            const accountDetailsForm = document.getElementById('accountDetailsForm');
-            const firstNameInput = document.getElementById('firstName');
-            const surnameInput = document.getElementById('surname');
-            const phoneNumberInput = document.getElementById('phoneNumber');
-            const accountEmailAddressInput = document.getElementById('accountEmailAddress');
-            const signupDateInput = document.getElementById('signupDate');
-            const originalEmailVerifiedInput = document.getElementById('emailVerified');
-
-            // Initialize variables to store user details
-            let originalFirstName = user.displayName || '';
-            let originalSurname = ''; // You can populate this from Firebase if available
-            let originalPhoneNumber = ''; // You can populate this from Firebase if available
-            let originalAccountEmailAddress = ''; // You can populate this from Firebase if available
-            let originalSignupDate = ''; // You can populate this from Firebase if available
-            let originalEmailVerified = ''; // You can populate this from Firebase if available
-            let formattedDate;
-
-            // Reference to the user's data in the database
-            const userRef = firebase.database().ref('users/' + user.uid);
-
-            // Retrieve user data from the database
-            userRef.once('value')
-                .then((snapshot) => {
-                    const userData = snapshot.val();
-                    if (userData) {
-                        originalFirstName = userData.firstName || '';
-                        originalSurname = userData.surname || '';
-                        originalPhoneNumber = userData.phoneNumber || '';
-                        originalAccountEmailAddress = userData.email;
-                        originalEmailVerified = userData.emailVerified || '';
-                        
-                        // Initialize formattedDate to a default value (e.g., 'Not available')
-                        let formattedDate = 'Not available';
-                    
-                        if (user.signupDate !== null) {
-                            const signupDateTimestamp = userData.signupDate * 1000;
-                            // console.log("user.uid: ", user.uid)
-                            // console.log("userData.signupDate: ", userData.signupDate)
-                            
-                            if (!isNaN(signupDateTimestamp)) { // Check if it's a valid timestamp
-                                originalSignupDate = new Date(signupDateTimestamp);
-                                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                                formattedDate = originalSignupDate.toLocaleDateString('en-IE', options);
-                            } else {
-                                console.error('Invalid timestamp:', user.signupDate);
-                            }  
-                        } else {
-                            console.error('Signup date is null.');
-                        }
-                    
-                        // Debugging: Log values for inspection
-                        // console.log('originalFirstName:', originalFirstName);
-                        // console.log('originalSurname:', originalSurname);
-                        // console.log('originalPhoneNumber:', originalPhoneNumber);
-                        // console.log('originalAccountEmailAddress:', originalAccountEmailAddress);
-                        // console.log('formattedDate:', formattedDate);
-
-                        if (originalEmailVerified) {
-                            originalEmailVerified = "Yes";
-                        } else if (!originalEmailVerified) {
-                            originalEmailVerified = "No";
-                        }
-                    
-                        // Populate the form with user details
-                        firstNameInput.value = originalFirstName;
-                        surnameInput.value = originalSurname;
-                        phoneNumberInput.value = originalPhoneNumber;
-                        accountEmailAddressInput.value = originalAccountEmailAddress;
-                        signupDateInput.value = formattedDate;
-                        originalEmailVerifiedInput.value = originalEmailVerified;
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error retrieving user data: ", error);
-                });
-
-            // Handle form submission
-            accountDetailsForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-
-                // Get updated user details from the form
-                const updatedFirstName = firstNameInput.value;
-                const updatedSurname = surnameInput.value;
-                const updatedPhoneNumber = phoneNumberInput.value;
-
-                // Check if there are changes
-                if (
-                    updatedFirstName !== originalFirstName ||
-                    updatedSurname !== originalSurname ||
-                    updatedPhoneNumber !== originalPhoneNumber
-                ) {
-                    // Create an object to store updated details
-                    const updatedDetails = {
-                        firstName: updatedFirstName,
-                        surname: updatedSurname,
-                        phoneNumber: updatedPhoneNumber,
-                        displayName: updatedFirstName,
-                        fullName: updatedFirstName + " " + updatedSurname,
-                        // Add other fields as needed
-                    };
-
-                    // Update user details in Firebase Realtime Database
-                    userRef.update(updatedDetails)
-                        .then(() => {
-                            // Successfully updated user details in Firebase
-                            // Also update the original values with the new values
-                            originalFirstName = updatedFirstName;
-                            originalSurname = updatedSurname;
-                            originalPhoneNumber = updatedPhoneNumber;
-
-                            // Update user.displayName to match updated firstName
-                            user.updateProfile({
-                                displayName: updatedFirstName
-                            }).then(() => {
-                                // Successfully updated user.displayName
-                                console.error("Successfully updated user.displayName: ", user.displayName);
-                            }).catch((error) => {
-                                console.error("Error updating user.displayName: ", error);
-                            });
-
-                            const welcomeMessage = document.getElementById('welcomeMessage');
-                            welcomeMessage.innerText = `Welcome back ${updatedFirstName}`;
-
-                            // Close the modal
-                            accountDetailsModal.hide();
-                        })
-                        .catch((error) => {
-                            console.error("Error updating user details in Firebase: ", error);
-                        });
-                } else {
-                    // No changes, close the modal
-                    accountDetailsModal.hide();
-                }
-            });
-        };
-}
-
-
-async function showPreviousPurchases() {
-    const userId = firebase.auth().currentUser.uid; // Get current user ID
-    const purchasesRef = firebase.database().ref(`users/${userId}/eventsPurchased`);
-  
-    try {
-      const snapshot = await purchasesRef.once('value');
-      const purchases = snapshot.val();
-      const purchasesList = document.getElementById('purchasesList');
-      purchasesList.innerHTML = ''; // Clear existing list
-  
-      if (!purchases) {
-        // If there are no purchases, show an alert
-        alert("No previous bookings found.");
-      } else {
-        // If there are purchases, proceed to list them
-        Object.keys(purchases).forEach(key => {
-            const purchase = purchases[key];
-            const formattedDate = formatDate(purchase.date); // Convert YYYYMMDD to DD/MM/YYYY
-            const formattedTimestamp = formatTimestamp(purchase.paidTimestamp); // Convert timestamp to readable date/time
-          
-            // Create a new list item for each purchase with each item in its own row
-            const listItem = document.createElement('div');
-            listItem.classList.add('list-group-item', 'purchase-item'); // Added 'purchase-item' for additional styling
-            listItem.innerHTML = `
-              <div><strong class="text-orange">Date of Event:</strong> ${formattedDate}</div>
-              <div><strong class="text-orange">Description:</strong> ${purchase.description}</div>
-              <div><strong class="text-orange">Participants:</strong> ${purchase.numParticipants}</div>
-              <div><strong class="text-orange">Paid On:</strong> ${formattedTimestamp}</div>
-              <div><strong class="text-orange">Total Price:</strong> €${purchase.totalPrice}</div>
-            `;
-            purchasesList.appendChild(listItem);
-          });
-  
-        // Show the modal
-        const modal = new bootstrap.Modal(document.getElementById('previousPurchasesModal'));
-        modal.show();
-      }
-    } catch (error) {
-      console.error("Error fetching previous purchases:", error);
+    var myModal = new bootstrap.Modal(document.getElementById('userProfileModal'), {
+        keyboard: false
+    });
+    myModal.show();
+    
+    const user = firebase.auth().currentUser;
+    // console.log("user: ", user);
+    if (user) {
+        prePopulateModal(user.uid);
+        // Code to open the modal goes here
     }
-  }
-  
+}
 
 
   function formatDate(dateStr) {
@@ -358,10 +187,12 @@ async function showPreviousPurchases() {
 
 
 function logUserOut() {
+    // console.log("Logging user out...");
     firebase.auth().signOut()
         .then(() => {
+            // console.log("User logged out...");
             const welcomeMessage = document.getElementById('welcomeMessage');
-            welcomeMessage.innerText = `Welcome to Date Roulette`;
+            welcomeMessage.innerText = `Welcome to Trader App`;
             const userPhoto = document.getElementById('userPhoto');
             const userInfoContainer = document.getElementById('userInfoContainer');
             // welcomeMessage.style.display = 'none';
@@ -372,4 +203,29 @@ function logUserOut() {
         .catch((error) => {
             console.error("Error during sign out: ", error);
         });
+}
+
+
+function ensureUUID() {
+  // Check if the UUID already exists in localStorage
+  let uuid = localStorage.getItem('UUID');
+  
+  if (!uuid) {
+      // Generate a new UUID
+      uuid = generateUUID();
+      // Store the new UUID in localStorage
+      localStorage.setItem('UUID', uuid);
+  }
+  
+  console.log('UUID:', uuid);
+  return uuid;
+}
+
+function generateUUID() {
+  // Generate a simple UUID (version 4 like)
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+  });
 }

@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "cartraderappirl"
-  }
+  },
+  "targets": {
+    "cartraderappirl": {
+      "hosting": {
+        "production": [
+          "cartraderappirl"
+        ],
+        "staging": [
+          "cartraderapp"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

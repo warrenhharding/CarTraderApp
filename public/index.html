@@ -24,7 +24,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
+    <!-- Include noUiSlider CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css" rel="stylesheet">
+    <!-- Include noUiSlider JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script>
+
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -45,10 +52,27 @@
         <div class="dropdown-content" id="hamburgerDropdown">
             <div id="signInSignUpMenu" class="dropdown-item" onclick="openAuthModal()">Sign In / Sign Up</div>
             
-            <div id="accountDetailsMenuItem" class="dropdown-item" onclick="showAccountDetails()" style="display: none;">Account Details</div>
-            <div id="previousPurchasesMenuItem" class="dropdown-item" onclick="showPreviousPurchases()" style="display: none;">Previous Bookings</div>
+            <div id="accountDetailsMenuItem" class="dropdown-item" onclick="showAccountDetails()" style="display: none;">Profile Details</div>
+            <div id="subscriptionStatusMenuItem" class="dropdown-item" style="display: none;">Subscription Status: Checking...</div>
+            <div id="makePaymentMenuItem" class="dropdown-item" onclick="makePayment()" style="display: none;">Subscribe</div>
+            <div id="enableNotificationsMenuItem" class="dropdown-item" onclick="enableNotifications()" style="display: none;">Enable Notifications</div>
+            <div id="viewAdsDashboardMenuItem" class="dropdown-item" onclick="loadUserAds('current')" style="display: none;">View Ads Dashboard</div>
             <div id="logoutMenuItem" class="dropdown-item" onclick="logUserOut()" style="display: none;">Log out</div>
             <!-- Your other menu items here -->
+        </div>
+    </div>
+
+    <div>
+        <div class="col-2"> 
+            <div class="row">
+                <button type="button" class="btn btn-primary mb-2" id="uploadCarButton" style="display: none;">Upload Car Now</button>
+            </div>
+        </div>
+
+        <div class="col-2"> 
+            <div class="row">
+                <button type="button" class="btn btn-primary mb-2" id="addNewCarMake" style="display: none;">Add Car Manufacturer</button>
+            </div>
         </div>
     </div>
     
@@ -96,62 +120,427 @@
                             <button type="button" id="emailAuthButton" class="btn btn-primary custom-primary-btn">Submit</button>
                         </form>
                         <p class="text-center mt-3">New here? Just sign in and we'll set up your account!</p>
+                        <p id="authModalMessage" class="text-warning"></p>
                     </div>
                 </div>
             </div>
         </div>
+        
+
+        <!-- Complete Profile Reminder Modal -->
+        <div class="modal fade" id="completeProfileReminderModal" tabindex="-1" aria-labelledby="completeProfileReminderModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="completeProfileReminderModalLabel">Complete Your Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                We still need some personal data to complete the setup of your account. Would you like to complete that now?
+                </div>
+                <div class="modal-footer flex-column">
+                <button type="button" class="btn btn-primary mb-2" id="completeProfileNow">Complete Profile Now</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="completeProfileLater">Complete Profile Later</button>
+                </div>
+            </div>
+            </div>
+        </div>
+  
 
 
-    <!-- Account Details Modal -->
-    <!-- <div class="modal fade" id="accountDetailsModal" tabindex="-1" aria-labelledby="accountDetailsModalLabel" aria-hidden="true">
+    <!-- User Profile Completion Modal for Bootstrap 5 -->
+    <div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="userProfileModalLabel">Complete Your Profile <span class="required">(* indicates a required field)</span></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <form id="userProfileForm">
+                <div class="form-group mb-3">
+                    <label for="emailAddress" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required readonly>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="firstName" class="form-label">First Name <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter your first name" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="surname" class="form-label">Surname <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="surname" name="surname" placeholder="Enter your surname" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="businessName" class="form-label">Business Name (if applicable)</label>
+                    <input type="text" class="form-control" id="businessName" name="businessName" placeholder="Enter your business name">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="phoneNumber" class="form-label">Phone Number <span class="required">*</span></label>
+                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Enter your phone number" required>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label for="address1" class="form-label">Address 1 <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="address1" name="address1" placeholder="Enter your address" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="address2" class="form-label">Address 2</label>
+                    <input type="text" class="form-control" id="address2" name="address2" placeholder="Additional address details">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="county" class="form-label">County <span class="required">*</span></label>
+                    <select class="form-control" id="county" name="county" required>
+                      <option value="" selected disabled>Select your county</option>
+                      <option value="Antrim">Antrim</option>
+                      <option value="Armagh">Armagh</option>
+                      <option value="Carlow">Carlow</option>
+                      <option value="Cavan">Cavan</option>
+                      <option value="Clare">Clare</option>
+                      <option value="Cork">Cork</option>
+                      <option value="Derry">Derry</option>
+                      <option value="Donegal">Donegal</option>
+                      <option value="Down">Down</option>
+                      <option value="Dublin">Dublin</option>
+                      <option value="Fermanagh">Fermanagh</option>
+                      <option value="Galway">Galway</option>
+                      <option value="Kerry">Kerry</option>
+                      <option value="Kildare">Kildare</option>
+                      <option value="Kilkenny">Kilkenny</option>
+                      <option value="Laois">Laois</option>
+                      <option value="Leitrim">Leitrim</option>
+                      <option value="Limerick">Limerick</option>
+                      <option value="Longford">Longford</option>
+                      <option value="Louth">Louth</option>
+                      <option value="Mayo">Mayo</option>
+                      <option value="Meath">Meath</option>
+                      <option value="Monaghan">Monaghan</option>
+                      <option value="Offaly">Offaly</option>
+                      <option value="Roscommon">Roscommon</option>
+                      <option value="Sligo">Sligo</option>
+                      <option value="Tipperary">Tipperary</option>
+                      <option value="Tyrone">Tyrone</option>
+                      <option value="Waterford">Waterford</option>
+                      <option value="Westmeath">Westmeath</option>
+                      <option value="Wexford">Wexford</option>
+                      <option value="Wicklow">Wicklow</option>
+                    </select>
+                  </div>
+                  
+
+                <div class="form-group mb-3">
+                    <label for="eircode" class="form-label">Eircode</label>
+                    <input type="text" class="form-control" id="eircode" name="eircode" placeholder="Enter your Eircode">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="country" class="form-label">Country</label>
+                    <input type="text" class="form-control" id="country" name="country" value="Ireland">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="avatarUpload" class="form-label">Image</label>
+                    <input type="file" class="form-control" id="avatarUpload" name="avatarUpload" accept="image/*" capture>
+                </div>
+
+            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="updateProfileButton" class="btn btn-primary mt-3" form="userProfileForm">Save Changes</button>
+                <button type="button" class="btn btn-secondary mt-3" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    <!-- Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="accountDetailsModalLabel">Your Account Details</h5>
+                    <h5 class="modal-title" id="paymentModalLabel">Subscription Payment</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="accountDetailsForm">
+                    <form id="payment-form">
+                        <!-- Subscription Plan Selection -->
+                        <div class="form-group mb-3">
+                            <label for="subscriptionPlan" class="form-label">Choose your plan:</label>
+                            <select id="subscriptionPlan" class="form-control" required>
+                                <option value="">Select a plan</option>
+                                <option value="price_1OqXDNAWUi2tvbZgyVExgkGk">Monthly Subscription - €10 + VAT</option>
+                                <option value="price_1OqXEWAWUi2tvbZgRgBbRryx">Annual Subscription - €100 + VAT</option>
+                            </select>
+                        </div>
+            
+                        <div id="card-element" class="mt-4 mb-2">
+                            <!-- Stripe Elements will create input elements here -->
+                        </div>
+                        <div id="card-errors" class="mt-4 mb-2" role="alert" style="color: red;"></div>
+                        <button id="submit" class="btn btn-primary mt-4">Subscribe</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Car Upload Modal -->
+    <div class="modal fade" id="carUploadModal" tabindex="-1" aria-labelledby="carUploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-custom">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="carUploadModalLabel">Upload Car for Sale</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="carUploadForm">
                         <div class="mb-3">
-                            <label for="accountEmailAddress" class="form-label">Email Address</label>
-                            <input type="text" class="form-control" id="accountEmailAddress" name="accountEmailAddress" placeholder="Email Address" readonly>
+                            <label for="carMake" class="form-label">Make (required)</label>
+                            <select class="form-select" id="carMake" required>
+                                <!-- Populate this with options for car makes -->
+                            </select>
                         </div>
                         <div class="mb-3">
-                            <label for="firstName" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name">
+                            <label for="carModel" class="form-label">Model (required)</label>
+                            <input type="text" class="form-control" id="carModel" required>
                         </div>
                         <div class="mb-3">
-                            <label for="surname" class="form-label">Surname</label>
-                            <input type="text" class="form-control" id="surname" name="surname" placeholder="Surname">
+                            <label for="carPrice" class="form-label">Price (required)</label>
+                            <input type="text" class="form-control" id="carPrice" required>
                         </div>
                         <div class="mb-3">
-                            <label for="phoneNumber" class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number">
+                            <label for="carYear" class="form-label">Year of First Registration (required)</label>
+                            <input type="number" class="form-control" id="carYear" required>
                         </div>
                         <div class="mb-3">
-                            <label for="emailVerified" class="form-label">Email Verified?</label>
-                            <input type="text" class="form-control" id="emailVerified" name="emailVerified" placeholder="" readonly>
+                            <label for="carCounty" class="form-label">County (required)</label>
+                            <select class="form-select" id="carCounty" required>
+                                <option value="" selected disabled>Select your county</option>
+                                <option value="Antrim">Antrim</option>
+                                <option value="Armagh">Armagh</option>
+                                <option value="Carlow">Carlow</option>
+                                <option value="Cavan">Cavan</option>
+                                <option value="Clare">Clare</option>
+                                <option value="Cork">Cork</option>
+                                <option value="Derry">Derry</option>
+                                <option value="Donegal">Donegal</option>
+                                <option value="Down">Down</option>
+                                <option value="Dublin">Dublin</option>
+                                <option value="Fermanagh">Fermanagh</option>
+                                <option value="Galway">Galway</option>
+                                <option value="Kerry">Kerry</option>
+                                <option value="Kildare">Kildare</option>
+                                <option value="Kilkenny">Kilkenny</option>
+                                <option value="Laois">Laois</option>
+                                <option value="Leitrim">Leitrim</option>
+                                <option value="Limerick">Limerick</option>
+                                <option value="Longford">Longford</option>
+                                <option value="Louth">Louth</option>
+                                <option value="Mayo">Mayo</option>
+                                <option value="Meath">Meath</option>
+                                <option value="Monaghan">Monaghan</option>
+                                <option value="Offaly">Offaly</option>
+                                <option value="Roscommon">Roscommon</option>
+                                <option value="Sligo">Sligo</option>
+                                <option value="Tipperary">Tipperary</option>
+                                <option value="Tyrone">Tyrone</option>
+                                <option value="Waterford">Waterford</option>
+                                <option value="Westmeath">Westmeath</option>
+                                <option value="Wexford">Wexford</option>
+                                <option value="Wicklow">Wicklow</option>
+                            </select>
                         </div>
                         <div class="mb-3">
-                            <label for="signupDate" class="form-label">Subscriber Since</label>
-                            <input type="text" class="form-control" id="signupDate" name="signupDate" placeholder="" readonly>
+                            <label for="carColour" class="form-label">Colour (optional)</label>
+                            <input type="text" class="form-control" id="carColour">
                         </div>
-                        <button type="submit" class="btn btn-primary custom-primary-btn">Save</button>
+                        <div class="mb-3">
+                            <label for="carMileage" class="form-label">Mileage/Km (optional)</label>
+                            <input type="number" class="form-control" id="carMileage">
+                        </div>
+                        <div class="mb-3">
+                            <label for="carNCT" class="form-label">Current NCT Expiry Date Status (optional, MM/YY)</label>
+                            <input type="text" class="form-control" id="carNCT">
+                        </div>
+                        <div class="mb-3">
+                            <label for="carDetails" class="form-label">Free Text Details (optional)</label>
+                            <textarea class="form-control" id="carDetails" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="carImages" class="form-label">Image Upload (optional, up to 6 images)</label>
+                            <input class="form-control" type="file" id="carImages" multiple accept="image/*">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Car for Sale</button>
                     </form>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
+
+
+    <!-- Add Car Make Modal -->
+    <div class="modal fade" id="addCarMakeModal" tabindex="-1" aria-labelledby="addCarMakeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-custom">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="addCarMakeModalLabel">Add New Car Manufacturer</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <form id="addCarMakeForm">
+                <div class="mb-3">
+                <label for="carMakeName" class="form-label">Car Manufacturer</label>
+                <input type="text" class="form-control" id="carMakeName" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Make</button>
+            </form>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    <!-- Ad Management Modal -->
+    <div class="modal fade" id="adManagementModal" tabindex="-1" role="dialog" aria-labelledby="adManagementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-custom" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="adManagementModalLabel">Manage Your Ads</h5>
+            <div id="freeAdsMessageBox" class="alert alert-info mt-2" style="display: none;"></div>
+            <button type="button" class="btn btn-outline-secondary" id="currentListingsButton" onclick="loadUserAds('current')">Current Listings</button>
+            <button type="button" class="btn btn-outline-secondary" id="archivedListingsButton" onclick="loadUserAds('archived')">Archived Listings</button>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date Created</th>
+                                <th scope="col">Make</th>
+                                <th scope="col">Model</th>
+                                <th scope="col">Colour</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Pay Now</th>
+                                <th scope="col">Archive</th>
+                            </tr>
+                        </thead>
+                    <tbody id="adsTableBody">
+                    <!-- Ad rows will be inserted here -->
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="payNowButton" class="btn btn-success mb-3" disabled>Pay Now</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    <!-- Car Listings Modal -->
+    <div class="modal fade" id="carListingsModal" tabindex="-1" aria-labelledby="carListingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="carListingsModalLabel">Car Listings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Subscription Notice -->
+                    <div class="subscription-notice">
+                        Remember: You need a subscription to see more details.
+                    </div>
+
+                    <!-- Filters Section -->
+                    <div class="filters mb-4">
+                        <!-- Location Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-info dropdown-toggle mb-3" type="button" id="locationDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select Locations
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="locationDropdownMenuButton" id="locationFilter">
+                                <!-- Location options will be dynamically added here -->
+                            </ul>
+                        </div>
+                        
+                        <!-- Make/Manufacturer Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-info dropdown-toggle mb-3" type="button" id="makeDropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select Make
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="makeDropdownMenuButton" id="makeFilter">
+                                <!-- Make options will be dynamically added here -->
+                            </ul>
+                        </div>
+
+                        <!-- Price Range Slider Container -->
+                        <div>
+                            <label for="priceSlider">
+                                Price Range: <span id="minPriceValue">€1000</span> - <span id="maxPriceValue">€30000</span>
+                            </label>
+                            <div id="priceSlider"></div>
+                        </div>
+                        
+                        <!-- Year Range Slider Container -->
+                        <div>
+                            <label for="yearSlider">
+                                Year Range: <span id="minYearValue">2000</span> - <span id="maxYearValue">2022</span>
+                            </label>
+                            <div id="yearSlider"></div>
+                        </div>
+                    </div>
+
+                    <!-- Car Listing Example (Repeat this block for each listing) -->
+                    <div id="listingsContainer">
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <img src="YOUR_IMAGE_URL" class="card-img-top" alt="Car Image">
+                                    <i class="fas fa-heart favorite-heart"></i>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Make of Car - Year</h5>
+                                        <p class="card-text">Price: €PRICE</p>
+                                        <p class="card-text"><small class="text-muted">Location: LOCATION</small></p>
+                                        <a href="#" class="btn btn-primary" onclick="checkSubscription()">See Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- More listings... -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
   
-    
-
-
-
-
 
 
     
-
 
 
     
@@ -159,6 +548,20 @@
     <div id="spinner" style="display: none;">
         <div class="loader"></div>
     </div>
+
+
+    <div id="toastContainer" class="position-fixed d-flex justify-content-center" style="z-index: 11; top: 50px; left: 0; right: 0;">
+        <div id="profileCompletionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="6000">
+          <div class="toast-header">
+            <strong class="me-auto">Profile Completion</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body" style="font-size: 18px;">
+            To complete your profile later on, click on the Menu button at the top right of the screen and click on 'Profile Details'.
+          </div>
+        </div>
+      </div>
+      
       
 
     
@@ -170,12 +573,20 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-functions.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
     <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.1.1/compressor.min.js"></script>
     <script src="firebaseConfig.js?v=1.1.1"></script>
     <script src="index.js?v=1.1.1"></script>
+    <script src="messaging.js?v=1.1.1"></script>
     <script src="signup.js?v=1.1.1"></script>
+    <script src="completeSignup.js?v=1.1.1"></script>
     <script src="menu.js?v=1.1.1"></script>
+    <script src="carMakes.js?v=1.1.1"></script>
+    <script src="carListings.js?v=1.1.1"></script>
+    <script src="payments.js?v=1.1.1"></script>
 
 
 
